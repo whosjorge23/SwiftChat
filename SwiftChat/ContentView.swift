@@ -8,15 +8,50 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var messages: [Message] = []
+    @State private var text: String = ""
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            List {
+                ForEach(messages) { message in
+                    HStack {
+                        if message.sender == "You" {
+                            Spacer()
+                            Text(message.text)
+                                .padding()
+//                                .background(Color.blue)
+                                .cornerRadius(10)
+                                .foregroundColor(.blue)
+                        } else {
+                            Text(message.text)
+                                .padding()
+//                                .background(Color.gray)
+                                .cornerRadius(10)
+                                .foregroundColor(.black)
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            HStack {
+                TextField("Enter message", text: $text)
+                Button(action: {
+                    self.messages.append(Message(sender: "You", text: self.text))
+                    self.text = ""
+                }) {
+                    Text("Send")
+                }
+            }
+            .padding()
         }
-        .padding()
     }
+}
+
+struct Message: Identifiable {
+    let id = UUID()
+    let sender: String
+    let text: String
 }
 
 struct ContentView_Previews: PreviewProvider {
